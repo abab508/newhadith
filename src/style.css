@@ -244,3 +244,34 @@
 .without-motion .scene .card-hotspot{transform:none!important}
 .without-motion .scene .card-hotspot::before,
 .without-motion .scene .card-hotspot::after{animation:none!important}
+
+/* Atmospheric cinematic details: independent, transparent light-only layers.
+   Never swap or move the original backdrop image. */
+.cinema-cloud-haze,.cinema-book-light{
+ position:absolute;pointer-events:none;z-index:2;opacity:0;
+}
+.with-motion .cinema-cloud-haze{
+ left:59%;top:1%;width:28%;height:22%;
+ background:radial-gradient(ellipse at 45% 50%,rgba(194,222,223,.11),transparent 71%);
+ filter:blur(15px);
+ animation:cinema-cloud-drift 16s ease-in-out infinite alternate;
+}
+.with-motion .cinema-book-light{
+ left:8%;top:31%;width:22%;height:17%;
+ background:radial-gradient(ellipse at 52% 49%,rgba(255,219,143,.18),transparent 68%);
+ mix-blend-mode:screen;
+ animation:cinema-book-reflect 7.5s ease-in-out infinite alternate;
+}
+@keyframes cinema-cloud-drift{
+ from{opacity:.2;transform:translate3d(-2%,0,0)}
+ to{opacity:.55;transform:translate3d(5%,1%,0)}
+}
+@keyframes cinema-book-reflect{
+ from{opacity:.15;transform:translateX(-1%)}
+ to{opacity:.52;transform:translateX(2%)}
+}
+.without-motion .cinema-cloud-haze,
+.without-motion .cinema-book-light{display:none!important}
+@media(prefers-reduced-motion:reduce){
+ .cinema-cloud-haze,.cinema-book-light{display:none!important;animation:none!important}
+}
