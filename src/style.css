@@ -110,3 +110,40 @@
    font-size:clamp(10px,1.0vw,17px);
  }
 }
+
+/* Restore the source-card hierarchy: circular emblem, title, Arabic subtitle.
+   No new background slab or duplicated rasterized captions. */
+@media(min-width:801px){
+ .scene .card-hotspot .card-labels{
+  position:absolute;z-index:1;inset-inline:3%;bottom:6%;
+  display:flex;flex-direction:column;align-items:center;justify-content:flex-end;
+  gap:1px;pointer-events:none;color:#fff3d4;text-align:center;
+ }
+ .scene .card-hotspot .card-title{
+  position:static;display:block;min-height:0;inset:auto;
+  font-family:Georgia,'Times New Roman',serif;
+  font-size:clamp(10px,1.25vw,21px);line-height:1.08;
+  font-weight:600;text-shadow:0 2px 4px #00180e;
+ }
+ .scene .card-hotspot .card-icon{
+  display:grid;place-items:center;width:clamp(17px,2.65vw,43px);
+  height:clamp(17px,2.65vw,43px);
+  color:#f5cf75;background:#05281c;border:1.5px solid #e2b965;
+  border-radius:50%;margin-bottom:2%;box-shadow:0 1px 5px #0009;
+ }
+ .scene .card-hotspot .card-icon svg{width:58%;height:58%}
+ .scene .card-hotspot .card-icon span{font-size:clamp(11px,1.5vw,23px)}
+ .scene .card-hotspot .card-ar-subtitle{font-family:'Noto Naskh Arabic','Traditional Arabic',serif;color:#f9dc9a;font-size:clamp(10px,1.1vw,18px);line-height:1.3;font-weight:500;text-shadow:0 2px 3px #00120c}
+ .scene .card-hotspot [lang="ar"] .card-title{font-family:'Noto Naskh Arabic','Traditional Arabic',serif;font-size:clamp(12px,1.45vw,23px);line-height:1.35}
+ /* The button label is independently positioned at the centre of the painted pill. */
+ .scene .search{position:absolute;display:block}
+ .scene .search input{position:absolute;left:1%;top:6%;width:79%;height:88%;padding-inline:2.5%}
+ .scene .search button{
+  position:absolute;right:1.2%;top:9%;height:82%;width:17.3%;
+  max-width:none;min-width:0;flex:none;padding:0;
+  display:grid;place-items:center;border:0;border-radius:999px;
+  background:transparent;color:#241904;text-align:center;
+  font-size:clamp(10px,.95vw,16px);line-height:1;
+ }
+}
+@media(max-width:800px){.card-labels{display:none}}
