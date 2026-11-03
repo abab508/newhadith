@@ -75,7 +75,7 @@ function App(){
   <div className="panel-topics">{chapter.topics.map((item,i)=><button key={i} onClick={()=>pending(item[idx])}><span>{item[idx]}</span><span aria-hidden="true">›</span></button>)}</div>
  </div>:null;
  return <main key={lang} className={'page '+(motion?'with-motion':'without-motion')} lang={lang.toLowerCase()}>
-  <div className="scene" role="region" aria-label="Milaghaiba"><div className="cinema-particles" aria-hidden="true"/><div className="cinema-lantern-glow" aria-hidden="true"/>
+  <div className="scene" role="region" aria-label="Milaghaiba"><div className="cinema-particles" aria-hidden="true"/><div className="cinema-lantern-glow" aria-hidden="true"/><div className="cinema-cloud-haze" aria-hidden="true"/><div className="cinema-book-light" aria-hidden="true"/>
    <img className="scene-art" src="/images/cinematic-textless.webp" alt="" aria-hidden="true" />
    <nav className="nav" style={at(143,28,505,48)} aria-label={tr.nav[0]}>{tr.nav.map((label,i)=><button key={i} onClick={()=>{if(i===0){setHover(null);setChosen(null);setNotice('')}else if(i===1)setNavOpen(v=>!v);else if(i===2)document.getElementById('search')?.focus();else pending(label)}}>{label}{i===1?' ⌄':''}</button>)}</nav>
    {navOpen&&<div className="nav-dropdown">{C.map((c,i)=><button key={c.id} onClick={()=>{select(i);setNavOpen(false)}}>{c.names[idx]}</button>)}</div>}
