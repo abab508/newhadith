@@ -41,6 +41,21 @@ function createWaterAmbience(){
  volume.gain.setTargetAtTime(0.025,context.currentTime,0.5);
  return {context,source,volume};
 }
+/* Pictogrammes du modèle original : une icône vectorielle par chapitre. */
+function ChapterIcon({id}){
+ const common={viewBox:"0 0 24 24",fill:"none",stroke:"currentColor",strokeWidth:1.65,strokeLinecap:"round",strokeLinejoin:"round",focusable:"false","aria-hidden":true};
+ const shapes={
+  belief:<><path d="M3 20V10m18 10V10M3 20h18M6 20v-7l2-2 2 2v7m4 0v-7l2-2 2 2v7"/><path d="M5 10h14M6 10c0-4 3-6 6-7 3 1 6 3 6 7M12 3V1m-2 3h4"/></>,
+  purity:<path d="M12 2C9 7 5 11 5 15a7 7 0 0 0 14 0c0-4-4-8-7-13Z"/>,
+  prayer:<><path d="M3 17h18l-2 4H5l-2-4ZM6 17l-2-9h16l-2 9Z"/><path d="M8 11h8M7 14h10"/></>,
+  fasting:<><rect x="4" y="5" width="16" height="16" rx="2"/><path d="M8 3v5m8-5v5M4 10h16m-8 4v4m-2-2h4"/></>,
+  family:<path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21l8.8-8.6a5.5 5.5 0 0 0 0-7.8Z"/>,
+  trade:<><rect x="3" y="7" width="18" height="14" rx="2"/><path d="M8 7V5c0-2 2-3 4-3s4 1 4 3v2M3 13h18M10 12v3h4v-3"/></>,
+  conduct:<><path d="M12 22V12m0 5c-4 0-8-3-8-8 5 0 8 3 8 8Zm0-5c0-5 3-9 8-9 0 5-3 9-8 9Z"/></>,
+  "last-day":<><path d="M5 2h14M5 22h14M7 2c0 5 5 6 5 10 0 4-5 5-5 10m10-20c0 5-5 6-5 10 0 4 5 5 5 10"/><path d="M9 7h6m-6 10h6"/></>
+ };
+ return <svg {...common}>{shapes[id]||shapes.belief}</svg>;
+}
 function App(){
  const ambienceRef=useRef(null);
  const [sound,setSound]=useState(false);
@@ -86,7 +101,7 @@ function App(){
    </header>
    <form className="search" style={at(425,315,798,66)} onSubmit={submit}><svg className="search-magnifier" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 5 5"/></svg><input id="search" value={query} onChange={e=>setQuery(e.target.value)} dir={lang==='AR'?'rtl':'ltr'} placeholder={tr.search} aria-label={tr.search}/><button>{tr.action}</button></form>
    <h2 className="chapter-heading cinematic-reveal" style={at(490,438,530,41)}>{tr.chapter}</h2>
-   <div className="card-grid">{C.map((c,i)=><button type="button" key={c.id} className={'card-hotspot card-'+c.id+' '+(hover===i?'hovered':'')} style={at(...placements[i])} aria-label={c.names[idx]} aria-pressed={chosen===i} onMouseEnter={()=>setHover(i)} onMouseLeave={()=>setHover(null)} onFocus={()=>setHover(i)} onBlur={()=>setHover(null)} onClick={()=>select(i)}><span className="card-labels" lang={lang.toLowerCase()} dir={lang==='AR'?'rtl':'ltr'}><span className="card-icon" aria-hidden="true">{i===4?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21l8.8-8.6a5.5 5.5 0 0 0 0-7.8Z"/></svg>:<span>✦</span>}</span><span className="card-title">{c.names[idx]}</span>{lang!=='AR'&&<span className="card-ar-subtitle" lang="ar" dir="rtl">{c.names[1]}</span>}</span></button>)}</div>
+   <div className="card-grid">{C.map((c,i)=><button type="button" key={c.id} className={'card-hotspot card-'+c.id+' '+(hover===i?'hovered':'')} style={at(...placements[i])} aria-label={c.names[idx]} aria-pressed={chosen===i} onMouseEnter={()=>setHover(i)} onMouseLeave={()=>setHover(null)} onFocus={()=>setHover(i)} onBlur={()=>setHover(null)} onClick={()=>select(i)}><span className="card-labels" lang={lang.toLowerCase()} dir={lang==='AR'?'rtl':'ltr'}><span className="card-icon" aria-hidden="true"><ChapterIcon id={c.id}/></span><span className="card-title">{c.names[idx]}</span>{lang!=='AR'&&<span className="card-ar-subtitle" lang="ar" dir="rtl">{c.names[1]}</span>}</span></button>)}</div>
    <aside className="panel" style={at(1172,405,457,497)} aria-live="polite">{topicPanel(active!==null)}</aside>
    {notice&&<div className="notice" role="status">{notice}<button onClick={()=>setNotice('')} aria-label="Fermer">×</button></div>}
   </div>
