@@ -498,3 +498,29 @@
 @media(prefers-reduced-motion:reduce){
  .scene .card-hotspot .card-icon{transform:none!important;filter:none!important}
 }
+
+/* Search: the gold capsule is part of the background image.
+   Leave the real HTML button invisible except for its text in all states.
+   Previously :hover/:focus-visible painted an extra oval offset from the art. */
+@media(min-width:801px){
+ .scene .search button,
+ .scene .search button:hover,
+ .scene .search button:active,
+ .scene .search button:focus,
+ .scene .search button:focus-visible{
+   background:transparent!important;
+   border:0!important;
+   outline:0!important;
+   outline-offset:0!important;
+   box-shadow:none!important;
+   filter:none!important;
+   -webkit-appearance:none;
+   appearance:none;
+ }
+ .scene .search button:focus-visible .search-action-text{
+   text-decoration:underline;
+   text-decoration-thickness:1px;
+   text-underline-offset:3px;
+ }
+ .scene .search button:hover .search-action-text{color:#33220a}
+}
