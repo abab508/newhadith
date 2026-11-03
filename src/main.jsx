@@ -45,7 +45,7 @@ function App(){
    {navOpen&&<div className="nav-dropdown">{C.map((c,i)=><button key={c.id} onClick={()=>{select(i);setNavOpen(false)}}>{c.names[idx]}</button>)}</div>}
    <div className="langs" style={at(1353,24,202,47)} role="group" aria-label="Language">{['FR','AR','EN'].map((l,i)=><React.Fragment key={l}>{i>0&&<span className="sep" aria-hidden="true">|</span>}<button aria-pressed={lang===l} onClick={()=>switchLang(l)}>{l}</button></React.Fragment>)}</div>
    <header className="hero" style={at(445,57,764,243)} dir={lang==='AR'?'rtl':'ltr'}>
-    <h1>Milaghaiba</h1><p className="arabic-brand" lang="ar" dir="rtl">الملة الغائبة</p>
+    <h1 className={lang==='AR'?'brand-ar':'brand-latin'} lang={lang==='AR'?'ar':'fr'} dir={lang==='AR'?'rtl':'ltr'}>{lang==='AR'?'الملة الغائبة':'Milaghaiba'}</h1><p className="arabic-brand" lang="ar" dir="rtl" aria-hidden={lang==='AR'}>{lang==='AR'?'\u00a0':'الملة الغائبة'}</p>
     <p className="eyebrow">{tr.eyebrow}</p><h2>{tr.headline}</h2><p className="hero-description">{tr.description}</p>
    </header>
    <form className="search" style={at(425,315,798,66)} onSubmit={submit}><input id="search" value={query} onChange={e=>setQuery(e.target.value)} dir={lang==='AR'?'rtl':'ltr'} placeholder={tr.search} aria-label={tr.search}/><button>{tr.action}</button></form>
