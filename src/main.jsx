@@ -38,7 +38,7 @@ function createWaterAmbience(){
  const volume=context.createGain();volume.gain.value=0.0001;
  source.connect(lowpass).connect(highpass).connect(volume).connect(context.destination);
  source.start();
- volume.gain.setTargetAtTime(0.025,context.currentTime,0.5);
+ volume.gain.setTargetAtTime(0.00001,context.currentTime,0.02);
  return {context,source,volume};
 }
 function App(){
@@ -51,6 +51,15 @@ function App(){
  const chapter=active===null?null:C[active];
  useEffect(()=>{document.documentElement.lang=lang.toLowerCase();document.title='Milaghaiba — '+tr.chapter;},[lang,tr.chapter]);
  useEffect(()=>{const m=window.matchMedia('(prefers-reduced-motion: reduce)');setMotion(!m.matches);const fn=()=>setMotion(!m.matches);m.addEventListener('change',fn);return()=>m.removeEventListener('change',fn)},[]);
+ // Sound is armed by the user, but runs only while Purification is hovered/focused.
+ useEffect(()=>{
+  const audio=ambienceRef.current;
+  if(!audio)return;
+  const active=sound&&(hover===1||chosen===1);
+  const now=audio.context.currentTime;
+  audio.volume.gain.cancelScheduledValues(now);
+  audio.volume.gain.setTargetAtTime(active?0.023:0.00001,now,active?0.16:0.10);
+ },[sound,hover,chosen]);
  useEffect(()=>()=>{const audio=ambienceRef.current;if(audio){audio.source.stop();void audio.context.close();ambienceRef.current=null}},[]);
  async function toggleSound(){
   if(sound){
@@ -86,7 +95,7 @@ function App(){
    </header>
    <form className="search" style={at(425,315,798,66)} onSubmit={submit}><svg className="search-magnifier" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 5 5"/></svg><input id="search" value={query} onChange={e=>setQuery(e.target.value)} dir={lang==='AR'?'rtl':'ltr'} placeholder={tr.search} aria-label={tr.search}/><button type="submit"><span className="search-action-text">{tr.action}</span></button></form>
    <h2 className="chapter-heading cinematic-reveal" lang={lang.toLowerCase()} dir={lang==='AR'?'rtl':'ltr'} style={at(490,446,530,36)}>{tr.chapter}</h2>
-   <div className="card-grid">{C.map((c,i)=><button type="button" key={c.id} className={'card-hotspot card-'+c.id+' '+(hover===i?'hovered':'')} style={at(...placements[i])} aria-label={c.names[idx]} aria-pressed={chosen===i} onMouseEnter={()=>setHover(i)} onMouseLeave={()=>setHover(null)} onFocus={()=>setHover(i)} onBlur={()=>setHover(null)} onClick={()=>select(i)}><span className={"theme-fx theme-fx-"+c.id} aria-hidden="true"><i/><i/><i/></span><span className="card-labels" lang={lang.toLowerCase()} dir={lang==='AR'?'rtl':'ltr'}><span className="card-icon" aria-hidden="true"><img className="original-medallion" src={`/images/icon-original-${i+1}.png`} alt="" draggable="false"/></span><span className="card-title">{c.names[idx]}</span>{lang!=='AR'&&<span className="card-ar-subtitle" lang="ar" dir="rtl">{c.names[1]}</span>}</span></button>)}</div>
+   <div className="card-grid">{C.map((c,i)=><button type="button" key={c.id} className={'card-hotspot card-'+c.id+' '+(hover===i?'hovered':'')} style={at(...placements[i])} aria-label={c.names[idx]} aria-pressed={chosen===i} onMouseEnter={()=>setHover(i)} onMouseLeave={()=>setHover(null)} onFocus={()=>setHover(i)} onBlur={()=>setHover(null)} onClick={()=>select(i)}><span className={"theme-fx theme-fx-"+c.id} aria-hidden="true"><i/><i/><i/>{c.id==='purity'&&<svg className="fountain-animation" viewBox="0 0 260 195" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="fountain-water" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#f2ffff" stopOpacity=".9"/><stop offset=".48" stopColor="#97e9ff" stopOpacity=".72"/><stop offset="1" stopColor="#d6ffff" stopOpacity=".15"/></linearGradient></defs><path className="fountain-water-path" d="M218 27 C179 24 166 43 156 63 C146 85 122 102 101 112" fill="none" stroke="url(#fountain-water)" strokeWidth="3.6" strokeLinecap="round"/><path className="fountain-water-sheen" d="M218 27 C179 24 166 43 156 63 C146 85 122 102 101 112" fill="none" stroke="#f3ffff" strokeWidth="1.1" strokeLinecap="round"/><ellipse className="fountain-wave wave-a" cx="104" cy="113" rx="28" ry="6" fill="none" stroke="#c5efff" strokeWidth="1.3"/><ellipse className="fountain-wave wave-b" cx="104" cy="113" rx="28" ry="6" fill="none" stroke="#c5efff" strokeWidth="1.3"/><circle className="fountain-drop drop-a" cx="110" cy="106" r="2.1" fill="#edffff"/><circle className="fountain-drop drop-b" cx="95" cy="108" r="1.7" fill="#d8ffff"/><circle className="fountain-drop drop-c" cx="120" cy="103" r="1.5" fill="#eaffff"/></svg>}</span><span className="card-labels" lang={lang.toLowerCase()} dir={lang==='AR'?'rtl':'ltr'}><span className="card-icon" aria-hidden="true"><img className="original-medallion" src={`/images/icon-original-${i+1}.png`} alt="" draggable="false"/></span><span className="card-title">{c.names[idx]}</span>{lang!=='AR'&&<span className="card-ar-subtitle" lang="ar" dir="rtl">{c.names[1]}</span>}</span></button>)}</div>
    <aside className="panel" style={at(1172,405,457,497)} aria-live="polite">{topicPanel(active!==null)}</aside>
    {notice&&<div className="notice" role="status">{notice}<button onClick={()=>setNotice('')} aria-label="Fermer">×</button></div>}
   </div>
