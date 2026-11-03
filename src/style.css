@@ -86,3 +86,27 @@
  .cinematic-reveal>*,.chapter-heading,.cinematic-panel-in{animation:none!important}
  .card-hotspot::after{display:none!important}
 }
+
+/* Search button: match the gold pill already painted in the text-free artwork.
+   The previous min-width + horizontal padding widened the button's flex box
+   and shifted its caption outside the pill. */
+@media(min-width:801px){
+ .scene .search{box-sizing:border-box}
+ .scene .search input{flex:1 1 0;min-width:0}
+ .scene .search button{
+   flex:0 0 17%;
+   width:17%;
+   min-width:0;
+   max-width:17%;
+   box-sizing:border-box;
+   padding:0;
+   margin:0;
+   display:flex;
+   justify-content:center;
+   align-items:center;
+   white-space:nowrap;
+   text-align:center;
+   line-height:1;
+   font-size:clamp(10px,1.0vw,17px);
+ }
+}
