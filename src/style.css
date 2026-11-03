@@ -399,3 +399,31 @@
   pointer-events:none;
  }
 }
+
+/* Arabic screenshot corrections: leave the ornament independent of the
+   heading, and let the panel show its current chapter without a gold halo. */
+@media(min-width:801px){
+ .page[lang="ar"] .scene .chapter-heading{
+   font-family:"Noto Naskh Arabic","Traditional Arabic",serif;
+   font-size:clamp(18px,2.05vw,35px);
+   line-height:1.2;
+   display:flex;
+   justify-content:center;
+   align-items:center;
+   white-space:nowrap;
+   text-align:center;
+   padding-top:3px;
+ }
+ .page[lang="ar"] .scene .hero h1.brand-ar{
+   max-width:100%;
+   font-size:clamp(20px,3vw,50px);
+ }
+ .page[lang="ar"] .panel-content{
+   direction:rtl;
+   text-align:right;
+ }
+ .page[lang="ar"] .panel-topics button{
+   direction:rtl;
+   text-align:right;
+ }
+}
