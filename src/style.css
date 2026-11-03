@@ -193,3 +193,27 @@
     Les découpes sont opaques, donc seule la carte dédiée est affichée. */
  .desktop-art .hotspot:nth-of-type(5) .chapter-art{object-fit:cover}
 }
+
+/* Décomposition de la maquette : le décor ne contient plus les cartes,
+   la barre de recherche et le panneau sont uniques. */
+@media(min-width:801px){
+ .desktop-art .details::before{
+  background-image:linear-gradient(180deg,#04201760 0%,#031811d9 32%,#031710f9 54%,#031710 100%),var(--chapter-image);
+  background-position:center top,center top;
+  background-size:cover,cover;
+ }
+ .desktop-art .desk-search{isolation:isolate}
+ .desktop-art .desk-search::before{
+  content:"";position:absolute;z-index:-1;inset:-12px -14px;
+  border-radius:45px;background:#00231b;
+ }
+ .desktop-art .langs::before{
+  content:"";position:absolute;z-index:-1;inset:-9px -15px;
+  border-radius:45px;background:#021d16;
+ }
+ .desktop-art .hotspot:hover .chapter-art,
+ .desktop-art .hotspot.hovered .chapter-art{filter:none!important;transform:none!important}
+ .desktop-art .hotspot:not(:hover):not(.hovered):not(:focus-visible){
+  outline:0;border:1px solid #b38a4d!important;box-shadow:none!important
+ }
+}
