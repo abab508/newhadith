@@ -217,32 +217,3 @@
   outline:0;border:1px solid #b38a4d!important;box-shadow:none!important
  }
 }
-
-/* Search v2: one clean original-style field, without the rectangular mask.
-   Its expanded footprint entirely covers the old right-hand decorative edge. */
-@media(min-width:801px){
- .desktop-art .desk-search {
-  isolation:auto;
-  padding:4px 5px;
-  gap:4px;
-  border:2px solid #e8c478;
-  border-radius:999px;
-  background:#001f18;
-  box-shadow:0 0 0 1px #09271c,0 3px 9px #00140bbf;
-  overflow:hidden;
- }
- .desktop-art .desk-search::before{content:none!important;display:none!important}
- .desktop-art .desk-search input{
-  padding-inline:3%;
-  line-height:1.15;
-  height:100%;
- }
- .desktop-art .desk-search button {
-  align-self:stretch;
-  height:auto;
-  flex:none;
-  padding-inline:3%;
-  min-width:19%;
-  border-radius:999px;
- }
-}
