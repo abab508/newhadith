@@ -55,7 +55,7 @@ function App(){
     <button type="submit">{t.go}</button>
    </form>
    <div className="hotspots-container" ref={cards}>{chapters.map((c,i)=>card(c,i))}</div>
-   <div className="langs" style={pos([1160,23,142,39])} role="group" aria-label="Langue de l’interface">{['FR','AR','EN'].map(l=><button type="button" key={l} aria-pressed={lang===l} lang={l.toLowerCase()} onClick={()=>{setLang(l);setNotice('')}}>{l}</button>)}</div>
+   <div className="langs" style={pos([1167,25,128,34])}>{['FR','AR','EN'].map(l=><button key={l} aria-pressed={lang===l} onClick={()=>{setLang(l);setNotice('')}}>{l}</button>)}</div>
    <aside className="details" style={{...pos([1017,394,380,540]),'--chapter-image':`url(/images/chapitre-${selectedIndex===null?5:selectedIndex+1}.webp)`}} aria-live="polite">{(hover!==null||panelOpen)?panel:<div className="panel-empty" aria-label={t.choose}><span aria-hidden="true">✧</span><p>{t.choose}</p></div>}</aside>
   </div>
   <div className="mobile-art">
