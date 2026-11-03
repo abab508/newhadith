@@ -59,7 +59,7 @@ function ChapterIcon({id}){
 function App(){
  const ambienceRef=useRef(null);
  const [sound,setSound]=useState(false);
- const [lang,setLang]=useState('FR'),[hover,setHover]=useState(null),[chosen,setChosen]=useState(null),[query,setQuery]=useState(''),[notice,setNotice]=useState(''),[motion,setMotion]=useState(true),[navOpen,setNavOpen]=useState(false);
+ const [lang,setLang]=useState('FR'),[hover,setHover]=useState(null),[chosen,setChosen]=useState(4),[query,setQuery]=useState(''),[notice,setNotice]=useState(''),[motion,setMotion]=useState(true),[navOpen,setNavOpen]=useState(false);
  const idx=lang==='AR'?1:lang==='EN'?2:0;
  const tr=translations[lang];
  const active=hover??chosen;
@@ -81,7 +81,7 @@ function App(){
    setSound(true);
   }catch{setNotice(lang==='AR'?'الصوت غير متاح':lang==='EN'?'Sound is unavailable':'Son indisponible')}
  }
- function switchLang(next){setLang(next);setNotice('');setHover(null)}
+ function switchLang(next){setLang(next);setNotice('');setHover(null);window.scrollTo({top:0,left:0,behavior:'instant'})}
  function select(i){setChosen(i);setNotice('')}
  function submit(e){e.preventDefault();const q=query.trim().toLocaleLowerCase();if(!q)return;const i=C.findIndex(c=>[...c.names,...c.topics.flat()].some(v=>v.toLocaleLowerCase().includes(q)));if(i===-1)setNotice(tr.notFound);else{select(i);setHover(null)}}
  function pending(label){setNotice(label+' — '+tr.unavailable)}
@@ -100,7 +100,7 @@ function App(){
     <p className="eyebrow">{tr.eyebrow}</p><h2>{tr.headline}</h2><p className="hero-description">{tr.description}</p>
    </header>
    <form className="search" style={at(425,315,798,66)} onSubmit={submit}><svg className="search-magnifier" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 5 5"/></svg><input id="search" value={query} onChange={e=>setQuery(e.target.value)} dir={lang==='AR'?'rtl':'ltr'} placeholder={tr.search} aria-label={tr.search}/><button type="submit"><span className="search-action-text">{tr.action}</span></button></form>
-   <h2 className="chapter-heading cinematic-reveal" style={at(490,438,530,41)}>{tr.chapter}</h2>
+   <h2 className="chapter-heading cinematic-reveal" lang={lang.toLowerCase()} dir={lang==='AR'?'rtl':'ltr'} style={at(490,446,530,36)}>{tr.chapter}</h2>
    <div className="card-grid">{C.map((c,i)=><button type="button" key={c.id} className={'card-hotspot card-'+c.id+' '+(hover===i?'hovered':'')} style={at(...placements[i])} aria-label={c.names[idx]} aria-pressed={chosen===i} onMouseEnter={()=>setHover(i)} onMouseLeave={()=>setHover(null)} onFocus={()=>setHover(i)} onBlur={()=>setHover(null)} onClick={()=>select(i)}><span className="card-labels" lang={lang.toLowerCase()} dir={lang==='AR'?'rtl':'ltr'}><span className="card-icon" aria-hidden="true"><ChapterIcon id={c.id}/></span><span className="card-title">{c.names[idx]}</span>{lang!=='AR'&&<span className="card-ar-subtitle" lang="ar" dir="rtl">{c.names[1]}</span>}</span></button>)}</div>
    <aside className="panel" style={at(1172,405,457,497)} aria-live="polite">{topicPanel(active!==null)}</aside>
    {notice&&<div className="notice" role="status">{notice}<button onClick={()=>setNotice('')} aria-label="Fermer">×</button></div>}
