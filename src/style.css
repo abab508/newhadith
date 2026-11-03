@@ -147,3 +147,100 @@
  }
 }
 @media(max-width:800px){.card-labels{display:none}}
+
+/* Original reference: slender search field, small magnifier, inset golden action.
+   All controls remain real HTML elements on top of the text-free artwork. */
+@media(min-width:801px){
+ .scene .search{overflow:visible;isolation:isolate}
+ .scene .search-magnifier{
+  position:absolute;z-index:2;left:2.5%;top:50%;width:2%;height:34%;
+  transform:translateY(-50%);color:#f6e7c4;pointer-events:none;
+ }
+ .scene .search input{
+  left:5.5%;width:72%;padding:0 1%;
+  font-size:clamp(9px,.88vw,15px);
+ }
+ .scene .search button{
+  top:14%;height:72%;right:2.1%;width:16%;
+  color:#241704;font-size:clamp(10px,.92vw,15px);
+  font-weight:700;border-radius:999px;
+ }
+ .scene .search:focus-within{
+  filter:drop-shadow(0 0 4px rgba(243,202,126,.3));
+ }
+ .scene .search button:hover,.scene .search button:focus-visible{
+  background:rgba(255,232,171,.13);
+  outline:1px solid #f6d28a;
+  outline-offset:-2px;
+ }
+}
+@media(max-width:800px){.search-magnifier{display:none}}
+
+/* Cinematic hover: motion, light traveling across the illustration and slight
+   physical depth, without replacing the artwork or adding new label blocks. */
+@media(hover:hover) and (pointer:fine){
+ .with-motion .scene .card-hotspot{
+  transform:translate3d(0,0,0);
+  transform-origin:50% 65%;
+  transition:transform .36s cubic-bezier(.19,.85,.24,1),
+             box-shadow .36s ease,border-color .3s ease;
+  will-change:auto;
+ }
+ .with-motion .scene .card-hotspot:is(:hover,.hovered,:focus-visible){
+  transform:translate3d(0,-3px,0) scale(1.014);
+  box-shadow:0 0 0 1px #ffe7a6,0 0 19px 5px #eabb6eaa,
+             0 13px 19px rgba(0,0,0,.36);
+  z-index:7;
+ }
+ .with-motion .scene .card-hotspot::before{
+  content:"";position:absolute;z-index:0;inset:2px;
+  border-radius:12px;pointer-events:none;opacity:0;
+  background:linear-gradient(115deg,
+     transparent 28%,rgba(250,222,154,.02) 43%,
+     rgba(255,235,174,.21) 50%,rgba(255,221,126,.02) 56%,
+     transparent 72%);
+  background-size:230% 100%;
+  background-position:130% 0;
+ }
+ .with-motion .scene .card-hotspot:is(:hover,.hovered,:focus-visible)::before{
+  opacity:1;animation:cinema-shimmer 1.35s ease-out both;
+ }
+ .with-motion .scene .card-hotspot .card-icon{
+  transition:transform .4s ease,box-shadow .4s ease;
+ }
+ .with-motion .scene .card-hotspot:is(:hover,.hovered,:focus-visible) .card-icon{
+  transform:translateY(-2px) scale(1.08);
+  box-shadow:0 0 13px rgba(248,211,134,.72);
+ }
+ /* Individual visual emphasis: luminous fountain ripples, lantern,
+    foliage and warm distant skyline. All are subtle overlays, not replacement photographs. */
+ .with-motion .card-purity:is(:hover,.hovered)::after{
+  background:repeating-radial-gradient(ellipse at 54% 62%,
+     transparent 0 16px,rgba(125,226,244,.11) 17px 19px,
+     transparent 20px 35px);
+  animation:cinema-ripples 2s ease-in-out infinite;
+ }
+ .with-motion .card-fasting:is(:hover,.hovered)::after{
+  background:radial-gradient(ellipse at 47% 43%,rgba(255,193,76,.25),transparent 57%);
+  animation:cinema-flicker 2.5s ease-in-out infinite;
+ }
+ .with-motion .card-family:is(:hover,.hovered)::after,
+ .with-motion .card-conduct:is(:hover,.hovered)::after{
+  background:linear-gradient(125deg,transparent 15%,rgba(246,229,151,.11) 48%,transparent 72%);
+  animation:cinema-breeze 3s ease-in-out infinite alternate;
+ }
+}
+@keyframes cinema-shimmer{
+ from{background-position:130% 0}
+ to{background-position:-35% 0}
+}
+@keyframes cinema-ripples{0%,100%{opacity:.28}50%{opacity:.72}}
+@keyframes cinema-flicker{0%,100%{opacity:.33}40%{opacity:.8}62%{opacity:.56}}
+@keyframes cinema-breeze{from{opacity:.22}to{opacity:.65}}
+@media(prefers-reduced-motion:reduce){
+ .scene .card-hotspot,.scene .card-icon{transform:none!important;transition:none!important}
+ .scene .card-hotspot::before,.scene .card-hotspot::after{animation:none!important}
+}
+.without-motion .scene .card-hotspot{transform:none!important}
+.without-motion .scene .card-hotspot::before,
+.without-motion .scene .card-hotspot::after{animation:none!important}
