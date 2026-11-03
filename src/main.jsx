@@ -55,11 +55,12 @@ function App(){
  useEffect(()=>{
   const audio=ambienceRef.current;
   if(!audio)return;
-  const active=sound&&(hover===1||chosen===1);
+  const touchMode=window.matchMedia('(hover: none)').matches;
+  const active=sound&&motion&&(hover===1||(touchMode&&chosen===1));
   const now=audio.context.currentTime;
   audio.volume.gain.cancelScheduledValues(now);
   audio.volume.gain.setTargetAtTime(active?0.023:0.00001,now,active?0.16:0.10);
- },[sound,hover,chosen]);
+ },[sound,hover,chosen,motion]);
  useEffect(()=>()=>{const audio=ambienceRef.current;if(audio){audio.source.stop();void audio.context.close();ambienceRef.current=null}},[]);
  async function toggleSound(){
   if(sound){
