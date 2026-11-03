@@ -622,3 +622,95 @@
  .scene .card-hotspot,.scene .card-icon{transition:none!important;animation:none!important}
  .scene .card-hotspot::before,.scene .card-hotspot::after{display:none!important}
 }
+
+/* Transparent, separately animated thematic layers (no new card borders).
+   Each layer is local to its own original photograph and never duplicates text
+   or the archived original medallion. The effects only play on hover/focus. */
+@media (min-width:801px) {
+ .scene .card-hotspot .theme-fx{
+  position:absolute;z-index:2;inset:4px;
+  overflow:hidden;border-radius:10px;pointer-events:none;
+  display:block;opacity:0;
+  transition:opacity .34s ease;
+ }
+ .scene .card-hotspot .theme-fx i{
+  display:block;position:absolute;pointer-events:none;
+  border:0;background:transparent;box-shadow:none;
+  animation-play-state:paused;
+ }
+ .with-motion .scene .card-hotspot:is(:hover,.hovered,:focus-visible) .theme-fx{
+  opacity:1;
+ }
+ .with-motion .scene .card-hotspot:is(:hover,.hovered,:focus-visible) .theme-fx i{
+  animation-play-state:running;
+ }
+ /* Belief: mosque dome illumination, no extra mosque silhouette */
+ .theme-fx-belief i:first-child{
+  left:26%;top:8%;width:48%;height:54%;border-radius:50%;
+  background:radial-gradient(ellipse,rgba(255,231,166,.24),transparent 70%);
+  animation:theme-breathe 3.4s ease-in-out infinite;
+ }
+ /* Purification: delicate flowing stream plus small water glints */
+ .theme-fx-purity i:first-child{
+  left:53%;top:2%;width:13%;height:50%;border-radius:40%;
+  background:linear-gradient(170deg,transparent,rgba(194,243,255,.28),transparent);
+  transform:rotate(24deg);animation:theme-water 1.2s linear infinite;
+ }
+ .theme-fx-purity i:nth-child(2){
+  left:30%;top:52%;width:47%;height:18%;border-radius:50%;
+  border-top:1px solid rgba(179,243,249,.57);
+  animation:theme-water-ripple 1.8s ease-out infinite;
+ }
+ /* Prayer: warm beams near upper window, no reillustration */
+ .theme-fx-prayer i:first-child{
+  left:51%;top:4%;width:35%;height:65%;
+  background:linear-gradient(120deg,transparent 15%,rgba(255,221,145,.17),transparent 76%);
+  transform:skewX(-12deg);animation:theme-breathe 4s ease-in-out infinite;
+ }
+ /* Ramadan: localized lantern flame and crescent shimmer */
+ .theme-fx-fasting i:first-child{
+  left:23%;top:23%;width:35%;height:43%;border-radius:50%;
+  background:radial-gradient(ellipse,rgba(255,188,77,.23),transparent 72%);
+  animation:theme-flame 1.9s ease-in-out infinite;
+ }
+ .theme-fx-fasting i:nth-child(2){
+  right:12%;top:5%;width:18%;height:17%;border-radius:50%;
+  background:radial-gradient(ellipse,rgba(250,243,193,.22),transparent 71%);
+  animation:theme-breathe 3.2s ease-in-out infinite;
+ }
+ /* Family: flowers and foliage get a soft living highlight */
+ .theme-fx-family i:first-child{
+  left:0;top:4%;width:45%;height:40%;
+  background:radial-gradient(ellipse at 25% 28%,rgba(255,205,220,.22),transparent 70%);
+  animation:theme-breeze 3.5s ease-in-out infinite;
+ }
+ /* Trade: gentle light moving along the two scales, visually suggesting a swing */
+ .theme-fx-trade i:first-child{
+  left:25%;top:16%;width:55%;height:46%;
+  background:linear-gradient(90deg,transparent,rgba(255,219,126,.19),transparent);
+  transform-origin:50% 0;animation:theme-balance 3.8s ease-in-out infinite;
+ }
+ /* Conduct: the tree canopy lit by moving sunlight */
+ .theme-fx-conduct i:first-child{
+  left:12%;top:2%;width:75%;height:49%;
+  background:radial-gradient(ellipse,rgba(246,230,134,.18),transparent 75%);
+  animation:theme-breeze 4.4s ease-in-out infinite;
+ }
+ /* End times: subtle drifting cloud highlights; no strobe or flashing lightning */
+ .theme-fx-last-day i:first-child{
+  left:0;top:4%;width:73%;height:42%;border-radius:50%;
+  background:radial-gradient(ellipse,rgba(234,239,237,.18),transparent 71%);
+  filter:blur(6px);animation:theme-cloud 6.5s ease-in-out infinite alternate;
+ }
+ @keyframes theme-breathe{0%,100%{opacity:.32}50%{opacity:.85}}
+ @keyframes theme-water{0%{opacity:.15;transform:translateY(-10%) rotate(24deg)}60%{opacity:.8}100%{opacity:.15;transform:translateY(22%) rotate(24deg)}}
+ @keyframes theme-water-ripple{0%{opacity:.05;transform:scale(.8)}70%{opacity:.7}100%{opacity:0;transform:scale(1.25)}}
+ @keyframes theme-flame{0%,100%{opacity:.3;transform:scale(.94)}45%{opacity:.82;transform:scale(1.04)}70%{opacity:.46}}
+ @keyframes theme-breeze{from{opacity:.25;transform:translateX(-4%) rotate(-2deg)}to{opacity:.79;transform:translateX(4%) rotate(2deg)}}
+ @keyframes theme-balance{0%,100%{opacity:.28;transform:rotate(-1.5deg)}50%{opacity:.8;transform:rotate(1.5deg)}}
+ @keyframes theme-cloud{from{opacity:.2;transform:translateX(-6%)}to{opacity:.64;transform:translateX(10%)}}
+}
+.without-motion .theme-fx,.without-motion .theme-fx i{display:none!important;animation:none!important}
+@media(prefers-reduced-motion:reduce){
+ .theme-fx,.theme-fx i{display:none!important;animation:none!important;transition:none!important}
+}
