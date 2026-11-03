@@ -29,7 +29,7 @@ function App(){
  const lookup=e=>{e.preventDefault();const q=query.trim().toLocaleLowerCase();if(!q)return;const i=chapters.findIndex(c=>[...c.title,...c.topics.flat()].some(v=>v.toLocaleLowerCase().includes(q)));if(i<0){setNotice(t.no)}else{choose(i);setNotice('');cards.current?.scrollIntoView({behavior:'smooth',block:'center'})}};
  const pending=label=>setNotice(label+' — '+t.soon);
  const card=(c,i,mobile=false)=><button key={c.id} type="button" className={(mobile?'mobile-card':'hotspot')+' '+(mobile&&selected===i?'selected':'')+(hover===i&&!mobile?' hovered':'')} style={mobile?undefined:pos(coords[i])} aria-label={c.title[iLang]} aria-pressed={mobile&&selected===i} onPointerEnter={e=>{if(e.pointerType==='mouse')setHover(i)}} onPointerLeave={e=>{if(e.pointerType==='mouse')setHover(null)}} onFocus={()=>setHover(i)} onBlur={()=>setHover(null)} onClick={()=>choose(i)}>
-   <img className="chapter-art" src={'/images/chapitre-'+(i+1)+'.webp'} alt=""/>
+   <img className="chapter-art" src={'/images/chapitre-'+(i+1)+(i===4?'-normal':'')+'.webp'} alt=""/>
    <span className="card-caption"><strong>{c.title[iLang]}</strong>{lang!=='AR'&&<span lang="ar" dir="rtl">{c.title[1]}</span>}</span>
   </button>;
  const panel=<div className="panel-copy" key={chapter.id}>
