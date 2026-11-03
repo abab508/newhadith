@@ -40,7 +40,7 @@ function App(){
  </div>;
  return <main className={'site '+(motion?'motion':'still')} lang={lang.toLowerCase()}>
   <div className="desktop-art">
-   <img className="reference" src="/images/backdrop-clean.webp" alt="Décor nocturne de la bibliothèque Milaghaiba"/>
+   <img className="reference" src="/images/backdrop-clean.webp?v=20261103-lang-clean-2" alt="Décor nocturne de la bibliothèque Milaghaiba"/>
    <div className="stars" aria-hidden="true"/>
    <nav className="nav-hotspots" aria-label="Navigation">
     <button style={pos([127,24,83,44])} onClick={()=>{setSelected(null);setHover(null);setPanelOpen(false);setNotice('')}} aria-label={t.home}/>
