@@ -1,61 +1,72 @@
-import React, { useState, useEffect } from 'react';
-import { createRoot } from 'react-dom/client';
+import React, {useEffect,useRef,useState} from 'react';
+import {createRoot} from 'react-dom/client';
 import './style.css';
 
-const CHAPTERS = [
- {title:'Croyance et foi',ar:'العقيدة والإيمان',topics:['Foi','Unicité','Destin','Sincérité']},
- {title:'Purification',ar:'الطهارة',topics:['Ablutions','Bain rituel','Eau et pureté','Tayammum']},
- {title:'Prière',ar:'الصلاة',topics:['Prières quotidiennes','Prière collective','Invocations','Sunnas de la prière']},
- {title:'Jeûne et Ramadan',ar:'الصيام ورمضان',topics:['Jeûne','Ramadan','Rupture du jeûne','Nuit du destin']},
- {title:'Mariage et famille',ar:'الزواج والأسرة',topics:['Mariage','Choix des conjoints','Droits des époux','Dot (mahr)','Divorce','Éducation des enfants']},
- {title:'Commerce et affaires',ar:'التجارة والمعاملات',topics:['Éthique commerciale','Vente et contrats','Dettes','Justice des transactions']},
- {title:'Morale et comportement',ar:'الأخلاق والآداب',topics:['Bienveillance','Patience','Respect','Relations humaines']},
- {title:'Signes de la fin des temps',ar:'أشراط الساعة',topics:['Signes mineurs','Signes majeurs','Épreuves','Dernier Jour']}
+const chapters=[
+ {id:'foi',title:['Croyance et foi','العقيدة والإيمان','Faith and belief'],topics:[['Foi','الإيمان','Faith'],['Unicité','التوحيد','Monotheism'],['Destin','القدر','Destiny'],['Sincérité','الإخلاص','Sincerity']]},
+ {id:'purification',title:['Purification','الطهارة','Purification'],topics:[['Ablutions','الوضوء','Ablution'],['Bain rituel','الغسل','Ritual bath'],['Eau et pureté','الماء والطهارة','Water and purity'],['Tayammum','التيمم','Dry ablution']]},
+ {id:'priere',title:['Prière','الصلاة','Prayer'],topics:[['Prières quotidiennes','الصلوات اليومية','Daily prayers'],['Prière collective','صلاة الجماعة','Congregational prayer'],['Invocations','الدعاء','Supplication'],['Sunnas de la prière','سنن الصلاة','Prayer traditions']]},
+ {id:'ramadan',title:['Jeûne et Ramadan','الصيام ورمضان','Fasting and Ramadan'],topics:[['Jeûne','الصيام','Fasting'],['Ramadan','رمضان','Ramadan'],['Rupture du jeûne','الإفطار','Breaking the fast'],['Nuit du destin','ليلة القدر','Night of Decree']]},
+ {id:'famille',title:['Mariage et famille','الزواج والأسرة','Marriage and family'],topics:[['Mariage','الزواج','Marriage'],['Choix des conjoints','اختيار الزوجين','Choosing a spouse'],['Droits des époux','حقوق الزوجين','Spousal rights'],['Dot (mahr)','المهر','Mahr'],['Divorce','الطلاق','Divorce'],['Éducation des enfants','تربية الأبناء','Raising children']]},
+ {id:'commerce',title:['Commerce et affaires','التجارة والمعاملات','Trade and business'],topics:[['Éthique commerciale','أخلاق التجارة','Business ethics'],['Vente et contrats','البيع والعقود','Sales and contracts'],['Dettes','الديون','Debts'],['Justice des transactions','العدل في المعاملات','Fair transactions']]},
+ {id:'morale',title:['Morale et comportement','الأخلاق والآداب','Ethics and conduct'],topics:[['Bienveillance','الإحسان','Kindness'],['Patience','الصبر','Patience'],['Respect','الاحترام','Respect'],['Relations humaines','العلاقات الإنسانية','Human relations']]},
+ {id:'signes',title:['Signes de la fin des temps','أشراط الساعة','Signs of the Last Hour'],topics:[['Signes mineurs','العلامات الصغرى','Minor signs'],['Signes majeurs','العلامات الكبرى','Major signs'],['Épreuves','الفتن','Trials'],['Dernier Jour','اليوم الآخر','Last Day']]}
 ];
-const cards=[[60,505,227,196],[302,505,227,196],[544,505,227,196],[785,505,225,196],[56,717,233,204],[302,717,228,204],[544,717,227,204],[785,717,225,204]];
-const pct=(n,d)=>(100*n/d)+'%';
-const position=([x,y,w,h])=>({left:pct(x,1448),top:pct(y,1086),width:pct(w,1448),height:pct(h,1086)});
+const tr={
+ FR:{search:'Rechercher un hadith, un thème, un mot-clé…',go:'Rechercher',chapters:'Grands chapitres',sub:'Sous-thèmes',intro:'Les enseignements transmis relatifs à',choose:'Choisir un chapitre',soon:'Cette rubrique sera créée lors de la prochaine étape.',no:'Aucun chapitre correspondant.',home:'Accueil',themes:'Thèmes',sources:'Sources'},
+ AR:{search:'ابحث عن حديث أو موضوع أو كلمة…',go:'بحث',chapters:'الأبواب الرئيسية',sub:'موضوعات فرعية',intro:'الأحاديث المتعلقة بـ',choose:'اختر بابًا',soon:'سيتم إنشاء هذه الصفحة في المرحلة التالية.',no:'لم يتم العثور على باب مطابق.',home:'الرئيسية',themes:'الموضوعات',sources:'المصادر'},
+ EN:{search:'Search a hadith, topic or keyword…',go:'Search',chapters:'Major chapters',sub:'Subtopics',intro:'Narrations related to',choose:'Choose a chapter',soon:'This section will be built in the next stage.',no:'No matching chapter.',home:'Home',themes:'Themes',sources:'Sources'}
+};
+const coords=[[60,505,227,196],[302,505,227,196],[544,505,227,196],[785,505,225,196],[56,717,233,204],[302,717,228,204],[544,717,227,204],[785,717,225,204]];
+const pos=([x,y,w,h])=>({left:(x/1448*100)+'%',top:(y/1086*100)+'%',width:(w/1448*100)+'%',height:(h/1086*100)+'%'});
 function App(){
- const [active,setActive]=useState(4),[opened,setOpened]=useState(false),[query,setQuery]=useState('');
- const [notice,setNotice]=useState(''),[motion,setMotion]=useState(true),[menu,setMenu]=useState(false),[language,setLanguage]=useState('FR');
- useEffect(()=>{const media=window.matchMedia('(prefers-reduced-motion: reduce)');setMotion(!media.matches);const onChange=()=>setMotion(!media.matches);media.addEventListener('change',onChange);return()=>media.removeEventListener('change',onChange);},[]);
- const select=i=>{setActive(i);setOpened(true);setNotice('');};
- const search=e=>{e.preventDefault();const q=query.trim().toLocaleLowerCase();if(!q)return;const i=CHAPTERS.findIndex(c=>[c.title,c.ar,...c.topics].some(t=>t.toLocaleLowerCase().includes(q)));if(i>=0){select(i)}else setNotice('Aucun chapitre correspondant. Le moteur de recherche des hadiths sera ajouté lors d’une prochaine étape.');};
- const pending=label=>setNotice('« '+label+' » sera créé lors de la prochaine étape. Pour l’instant, seule la page d’accueil est disponible.');
- const ch=CHAPTERS[active];
- return <main className={'site '+(motion?'motion':'still')}>
-  <section className="desktop-art" aria-label="Page d’accueil Milaghaiba, inspirée de la capture de référence">
-   <img src="/images/reference.webp" className="reference" alt="Milaghaiba : décor islamique nocturne, bibliothèque, mosquée et huit chapitres" />
-   <div className="stars" aria-hidden="true" />
-   <div className="nav-hotspots" role="navigation" aria-label="Navigation principale">
-    <button style={position([127,24,83,44])} onClick={()=>{setOpened(false);setNotice('')}} aria-label="Accueil"/>
-    <button style={position([216,24,90,44])} onClick={()=>setMenu(x=>!x)} aria-expanded={menu} aria-label="Menu Thèmes"/>
-    <button style={position([326,24,132,44])} onClick={()=>document.querySelector('#desktop-query')?.focus()} aria-label="Recherche"/>
-    <button style={position([459,24,99,44])} onClick={()=>pending('Sources')} aria-label="Sources"/>
-   </div>
-   {menu&&<div className="drop"><button onClick={()=>{setMenu(false);select(4)}}>Choisir un chapitre</button><button onClick={()=>{setMenu(false);pending('Tous les thèmes')}}>Tous les thèmes (bientôt)</button></div>}
-   <form className="desk-search" style={position([359,314,687,54])} onSubmit={search}>
-    <label className="sr-only" htmlFor="desktop-query">Rechercher un chapitre</label>
-    <input id="desktop-query" value={query} onChange={e=>setQuery(e.target.value)} placeholder="Rechercher un chapitre…"/>
-    <button type="submit" aria-label="Lancer la recherche">Rechercher</button>
+ const [selected,setSelected]=useState(4),[hover,setHover]=useState(null),[lang,setLang]=useState('FR'),[query,setQuery]=useState(''),[notice,setNotice]=useState(''),[menu,setMenu]=useState(false),[motion,setMotion]=useState(true);
+ const input=useRef(null),cards=useRef(null);
+ const iLang=lang==='AR'?1:lang==='EN'?2:0;
+ const selectedIndex=hover??selected, chapter=chapters[selectedIndex], t=tr[lang];
+ useEffect(()=>{const m=matchMedia('(prefers-reduced-motion: reduce)');setMotion(!m.matches);const fn=()=>setMotion(!m.matches);m.addEventListener('change',fn);return()=>m.removeEventListener('change',fn)},[]);
+ const choose=i=>{setSelected(i);setHover(null);setNotice('')};
+ const lookup=e=>{e.preventDefault();const q=query.trim().toLocaleLowerCase();if(!q)return;const i=chapters.findIndex(c=>[...c.title,...c.topics.flat()].some(v=>v.toLocaleLowerCase().includes(q)));if(i<0){setNotice(t.no)}else{choose(i);setNotice('');cards.current?.scrollIntoView({behavior:'smooth',block:'center'})}};
+ const pending=label=>setNotice(label+' — '+t.soon);
+ const card=(c,i,mobile=false)=><button key={c.id} type="button" className={(mobile?'mobile-card':'hotspot')+' '+(selectedIndex===i?'selected':'')} style={mobile?undefined:pos(coords[i])} aria-label={c.title[iLang]} aria-pressed={selected===i} onMouseEnter={()=>setHover(i)} onMouseLeave={()=>setHover(null)} onFocus={()=>setHover(i)} onBlur={()=>setHover(null)} onClick={()=>choose(i)}>
+   {mobile&&<img src={'/images/chapitre-'+(i+1)+'.webp'} alt=""/>}
+   <span className="card-caption"><strong>{c.title[iLang]}</strong>{lang!=='AR'&&<span lang="ar" dir="rtl">{c.title[1]}</span>}</span>
+  </button>;
+ const panel=<div className="panel-copy" key={chapter.id}>
+  <h2>{chapter.title[iLang]}</h2>{lang!=='AR'&&<p className="panel-ar" lang="ar" dir="rtl">{chapter.title[1]}</p>}
+  <p className="panel-description">{t.intro} {chapter.title[iLang].toLowerCase()}.</p>
+  <h3>✧ {t.sub} ✧</h3>
+  <div className="topics">{chapter.topics.map((s,j)=><button key={j} onClick={()=>pending(s[iLang])}><span>{s[iLang]}</span><span aria-hidden="true">›</span></button>)}</div>
+ </div>;
+ return <main className={'site '+(motion?'motion':'still')} lang={lang.toLowerCase()}>
+  <div className="desktop-art">
+   <img className="reference" src="/images/reference.webp" alt="Décor nocturne de la bibliothèque Milaghaiba"/>
+   <div className="stars" aria-hidden="true"/>
+   <nav className="nav-hotspots" aria-label="Navigation">
+    <button style={pos([127,24,83,44])} onClick={()=>{setSelected(4);setHover(null);setNotice('')}} aria-label={t.home}/>
+    <button style={pos([216,24,90,44])} onClick={()=>setMenu(!menu)} aria-label={t.themes} aria-expanded={menu}/>
+    <button style={pos([326,24,132,44])} onClick={()=>input.current?.focus()} aria-label={t.go}/>
+    <button style={pos([459,24,99,44])} onClick={()=>pending(t.sources)} aria-label={t.sources}/>
+   </nav>
+   {menu&&<div className="drop">{chapters.map((c,i)=><button key={i} onClick={()=>{choose(i);setMenu(false)}}>{c.title[iLang]}</button>)}</div>}
+   <form className="desk-search" style={pos([355,311,706,65])} onSubmit={lookup}>
+    <label className="sr-only" htmlFor="main-query">{t.search}</label>
+    <input ref={input} id="main-query" value={query} onChange={e=>setQuery(e.target.value)} placeholder={t.search}/>
+    <button type="submit">{t.go}</button>
    </form>
-   {cards.map((c,i)=><button key={i} style={position(c)} className={'hotspot hotspot-'+i+(active===i?' selected':'')} onClick={()=>select(i)} aria-label={'Afficher '+CHAPTERS[i].title} aria-pressed={active===i} />)}
-   <div className="langs" style={position([1167,25,128,34])}>{['FR','AR','EN'].map(l=><button key={l} onClick={()=>{setLanguage(l);if(l!=='FR')pending('Langue '+l)}} aria-pressed={language===l}>{l}</button>)}</div>
-   {opened&&<div className="details" style={position([1019,397,376,531])}>
-    <button className="close" aria-label="Fermer le panneau" onClick={()=>setOpened(false)}>×</button><div className="chapter-title">{ch.title}</div><div className="arabic" lang="ar" dir="rtl">{ch.ar}</div><p>Explorez les enseignements relatifs à ce chapitre.</p><h3>✧ Sous-thèmes ✧</h3>
-    {ch.topics.map(t=><button key={t} className="topic" onClick={()=>pending(t)}>{t}<span>›</span></button>)}
-   </div>}
-  </section>
-  <section className="mobile-art">
-   <nav className="mobile-top"><span>Accueil</span><button onClick={()=>pending('Thèmes')}>Thèmes ▾</button><button onClick={()=>pending('Sources')}>Sources</button></nav>
-   <header className="mobile-hero"><div className="mobile-logo">Milaghaiba</div><div className="arabic" lang="ar" dir="rtl">الملة الغائبة</div><p className="eyebrow">✧ Bibliothèque de hadiths ✧</p><h1>Les grands chapitres de l’islam</h1><p>Les hadiths sont organisés par grands thèmes et sous-thèmes.</p></header>
-   <form className="mobile-search" onSubmit={search}><label className="sr-only" htmlFor="mobile-query">Rechercher un chapitre</label><input id="mobile-query" value={query} onChange={e=>setQuery(e.target.value)} placeholder="Rechercher un chapitre…"/><button>Rechercher</button></form>
-   <h2>✧ Grands chapitres ✧</h2>
-   <div className="mobile-grid">{CHAPTERS.map((c,i)=><button key={i} className={'mobile-card '+(active===i?'chosen':'')} onClick={()=>select(i)} aria-pressed={active===i}><img src={'/images/chapitre-'+(i+1)+'.webp'} alt={c.title}/></button>)}</div>
-   {opened&&<div className="mobile-details"><h2>{ch.title}</h2><p lang="ar" dir="rtl">{ch.ar}</p>{ch.topics.map(t=><button key={t} onClick={()=>pending(t)}>{t} ›</button>)}</div>}
-  </section>
-  <div className="controls"><button onClick={()=>setMotion(v=>!v)} aria-pressed={motion}>{motion?'✦ Réduire les animations':'✧ Activer les animations'}</button><span>Accueil uniquement · version de démonstration</span></div>
-  {notice&&<div className="notice" role="status">{notice}<button onClick={()=>setNotice('')} aria-label="Fermer le message">×</button></div>}
- </main>;
+   <div className="hotspots-container" ref={cards}>{chapters.map((c,i)=>card(c,i))}</div>
+   <div className="langs" style={pos([1167,25,128,34])}>{['FR','AR','EN'].map(l=><button key={l} aria-pressed={lang===l} onClick={()=>{setLang(l);setNotice('')}}>{l}</button>)}</div>
+   <aside className="details" style={pos([1017,394,380,540])} aria-live="polite">{panel}</aside>
+  </div>
+  <div className="mobile-art">
+   <nav className="mobile-top"><button onClick={()=>{setSelected(4);setNotice('')}}>{t.home}</button><button onClick={()=>cards.current?.scrollIntoView({behavior:'smooth'})}>{t.themes}</button><button onClick={()=>pending(t.sources)}>{t.sources}</button><div>{['FR','AR','EN'].map(l=><button key={l} onClick={()=>setLang(l)} aria-pressed={lang===l}>{l}</button>)}</div></nav>
+   <header className="mobile-hero"><h1>Milaghaiba</h1><p lang="ar" dir="rtl">الملة الغائبة</p><h2>{t.chapters}</h2></header>
+   <form className="mobile-search" onSubmit={lookup}><input value={query} onChange={e=>setQuery(e.target.value)} placeholder={t.search} aria-label={t.search}/><button>{t.go}</button></form>
+   <div className="mobile-grid">{chapters.map((c,i)=>card(c,i,true))}</div>
+   <aside className="mobile-details">{panel}</aside>
+  </div>
+  <footer className="controls"><button aria-pressed={motion} onClick={()=>setMotion(!motion)}>{motion?'✦ Animations actives':'✧ Animations réduites'}</button><span>Milaghaiba · {t.home}</span></footer>
+  {notice&&<div className="notice" role="status">{notice}<button onClick={()=>setNotice('')} aria-label="Fermer">×</button></div>}
+ </main>
 }
 createRoot(document.getElementById('root')).render(<App/>);
