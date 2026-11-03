@@ -524,3 +524,42 @@
  }
  .scene .search button:hover .search-action-text{color:#33220a}
 }
+
+/* Search action hover: illuminate the ONE gold capsule baked into the artwork.
+   No new border, no offset oval, no dimension changes. */
+@media (min-width:801px) {
+ .scene .search button{
+   position:absolute;
+   isolation:isolate;
+ }
+ .scene .search button::before{
+   content:"";
+   position:absolute;
+   z-index:-1;
+   inset:-9% -6%;
+   border:0;
+   border-radius:999px;
+   background:radial-gradient(ellipse at center,
+     rgba(255,241,186,.33) 0%,
+     rgba(255,218,133,.15) 45%,
+     rgba(255,206,112,0) 78%);
+   opacity:0;
+   pointer-events:none;
+   transition:opacity .28s ease;
+ }
+ .with-motion .scene .search button:is(:hover,:focus-visible)::before{
+   opacity:1;
+ }
+ .scene .search .search-action-text{
+   transition:color .25s ease,text-shadow .25s ease;
+ }
+ .with-motion .scene .search button:is(:hover,:focus-visible) .search-action-text{
+   color:#271501;
+   text-shadow:0 0 5px rgba(255,248,203,.8);
+ }
+ .without-motion .scene .search button::before{opacity:0!important}
+}
+@media(prefers-reduced-motion:reduce){
+ .scene .search button::before{opacity:0!important;transition:none!important}
+ .scene .search .search-action-text{transition:none!important}
+}
