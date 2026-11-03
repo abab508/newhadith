@@ -427,3 +427,74 @@
    text-align:right;
  }
 }
+
+/* Exact recovered original medallions, transparent and image-only.
+   Frames are already painted in cinematic-textless.webp: never duplicate. */
+@media(min-width:801px){
+ .scene .card-hotspot .card-labels{
+  top:41%!important;
+  height:55%!important;
+  justify-content:flex-start;
+  gap:0;
+ }
+ .scene .card-hotspot .card-icon{
+  box-sizing:content-box;
+  display:block;
+  width:clamp(28px,3.08vw,52px)!important;
+  height:clamp(28px,3.08vw,52px)!important;
+  margin:0 0 1px;
+  padding:0;
+  border:0!important;
+  border-radius:50%;
+  background:transparent!important;
+  box-shadow:none!important;
+  overflow:visible;
+ }
+ .scene .card-hotspot .original-medallion{
+  display:block;
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  border:0;
+  border-radius:50%;
+  background:transparent;
+  pointer-events:none;
+ }
+ .scene .card-hotspot .card-title{
+  font-size:clamp(10px,1.05vw,18px);
+  line-height:1.1;
+ }
+ .scene .card-hotspot .card-ar-subtitle{font-size:clamp(9px,.94vw,16px)}
+ .scene .card-hotspot,
+ .with-motion .scene .card-hotspot,
+ .scene .card-hotspot:is(:hover,.hovered,:focus-visible),
+ .with-motion .scene .card-hotspot:is(:hover,.hovered,:focus-visible){
+  border:0!important;
+  outline:0;
+  box-shadow:none!important;
+  transform:none!important;
+  filter:none!important;
+  background:transparent!important;
+ }
+ .scene .card-hotspot:focus-visible{
+  outline:2px solid #f8d68e!important;
+  outline-offset:1px;
+ }
+ .with-motion .scene .card-hotspot:is(:hover,.hovered,:focus-visible) .card-icon{
+  transform:scale(1.07);
+  filter:drop-shadow(0 0 6px rgba(246,201,106,.6));
+ }
+ .with-motion .scene .card-hotspot:is(:hover,.hovered,:focus-visible) .card-labels{
+  text-shadow:0 0 5px rgba(246,208,128,.42);
+ }
+ .with-motion .scene .card-hotspot::before{
+  z-index:0;
+  opacity:0;
+  box-shadow:none;
+  border:0;
+ }
+ .with-motion .scene .card-hotspot::after{z-index:0;pointer-events:none}
+}
+@media(prefers-reduced-motion:reduce){
+ .scene .card-hotspot .card-icon{transform:none!important;filter:none!important}
+}
