@@ -20,12 +20,12 @@ const tr={
 const coords=[[60,505,227,196],[302,505,227,196],[544,505,227,196],[785,505,225,196],[56,717,233,204],[302,717,228,204],[544,717,227,204],[785,717,225,204]];
 const pos=([x,y,w,h])=>({left:(x/1448*100)+'%',top:(y/1086*100)+'%',width:(w/1448*100)+'%',height:(h/1086*100)+'%'});
 function App(){
- const [selected,setSelected]=useState(4),[hover,setHover]=useState(null),[lang,setLang]=useState('FR'),[query,setQuery]=useState(''),[notice,setNotice]=useState(''),[menu,setMenu]=useState(false),[motion,setMotion]=useState(true);
+ const [selected,setSelected]=useState(4),[hover,setHover]=useState(null),[panelOpen,setPanelOpen]=useState(false),[lang,setLang]=useState('FR'),[query,setQuery]=useState(''),[notice,setNotice]=useState(''),[menu,setMenu]=useState(false),[motion,setMotion]=useState(true);
  const input=useRef(null),cards=useRef(null);
  const iLang=lang==='AR'?1:lang==='EN'?2:0;
  const selectedIndex=hover??selected, chapter=chapters[selectedIndex], t=tr[lang];
  useEffect(()=>{const m=matchMedia('(prefers-reduced-motion: reduce)');setMotion(!m.matches);const fn=()=>setMotion(!m.matches);m.addEventListener('change',fn);return()=>m.removeEventListener('change',fn)},[]);
- const choose=i=>{setSelected(i);setHover(null);setNotice('')};
+ const choose=i=>{setSelected(i);setHover(null);setPanelOpen(true);setNotice('')};
  const lookup=e=>{e.preventDefault();const q=query.trim().toLocaleLowerCase();if(!q)return;const i=chapters.findIndex(c=>[...c.title,...c.topics.flat()].some(v=>v.toLocaleLowerCase().includes(q)));if(i<0){setNotice(t.no)}else{choose(i);setNotice('');cards.current?.scrollIntoView({behavior:'smooth',block:'center'})}};
  const pending=label=>setNotice(label+' — '+t.soon);
  const card=(c,i,mobile=false)=><button key={c.id} type="button" className={(mobile?'mobile-card':'hotspot')+' '+(selectedIndex===i?'selected':'')} style={mobile?undefined:pos(coords[i])} aria-label={c.title[iLang]} aria-pressed={selected===i} onMouseEnter={()=>setHover(i)} onMouseLeave={()=>setHover(null)} onFocus={()=>setHover(i)} onBlur={()=>setHover(null)} onClick={()=>choose(i)}>
@@ -43,7 +43,7 @@ function App(){
    <img className="reference" src="/images/reference.webp" alt="Décor nocturne de la bibliothèque Milaghaiba"/>
    <div className="stars" aria-hidden="true"/>
    <nav className="nav-hotspots" aria-label="Navigation">
-    <button style={pos([127,24,83,44])} onClick={()=>{setSelected(4);setHover(null);setNotice('')}} aria-label={t.home}/>
+    <button style={pos([127,24,83,44])} onClick={()=>{setSelected(4);setHover(null);setPanelOpen(false);setNotice('')}} aria-label={t.home}/>
     <button style={pos([216,24,90,44])} onClick={()=>setMenu(!menu)} aria-label={t.themes} aria-expanded={menu}/>
     <button style={pos([326,24,132,44])} onClick={()=>input.current?.focus()} aria-label={t.go}/>
     <button style={pos([459,24,99,44])} onClick={()=>pending(t.sources)} aria-label={t.sources}/>
@@ -56,14 +56,14 @@ function App(){
    </form>
    <div className="hotspots-container" ref={cards}>{chapters.map((c,i)=>card(c,i))}</div>
    <div className="langs" style={pos([1167,25,128,34])}>{['FR','AR','EN'].map(l=><button key={l} aria-pressed={lang===l} onClick={()=>{setLang(l);setNotice('')}}>{l}</button>)}</div>
-   <aside className="details" style={pos([1017,394,380,540])} aria-live="polite">{panel}</aside>
+   <aside className="details" style={pos([1017,394,380,540])} aria-live="polite">{(hover!==null||panelOpen)?panel:<div className="panel-empty" aria-label={t.choose}><span aria-hidden="true">✧</span><p>{t.choose}</p></div>}</aside>
   </div>
   <div className="mobile-art">
-   <nav className="mobile-top"><button onClick={()=>{setSelected(4);setNotice('')}}>{t.home}</button><button onClick={()=>cards.current?.scrollIntoView({behavior:'smooth'})}>{t.themes}</button><button onClick={()=>pending(t.sources)}>{t.sources}</button><div>{['FR','AR','EN'].map(l=><button key={l} onClick={()=>setLang(l)} aria-pressed={lang===l}>{l}</button>)}</div></nav>
+   <nav className="mobile-top"><button onClick={()=>{setSelected(4);setNotice('')}}>{t.home}</button><button onClick={()=>document.querySelector('#chapitres-mobile')?.scrollIntoView({behavior:'smooth'})}>{t.themes}</button><button onClick={()=>pending(t.sources)}>{t.sources}</button><div>{['FR','AR','EN'].map(l=><button key={l} onClick={()=>setLang(l)} aria-pressed={lang===l}>{l}</button>)}</div></nav>
    <header className="mobile-hero"><h1>Milaghaiba</h1><p lang="ar" dir="rtl">الملة الغائبة</p><h2>{t.chapters}</h2></header>
    <form className="mobile-search" onSubmit={lookup}><input value={query} onChange={e=>setQuery(e.target.value)} placeholder={t.search} aria-label={t.search}/><button>{t.go}</button></form>
-   <div className="mobile-grid">{chapters.map((c,i)=>card(c,i,true))}</div>
-   <aside className="mobile-details">{panel}</aside>
+   <div className="mobile-grid" id="chapitres-mobile">{chapters.map((c,i)=>card(c,i,true))}</div>
+   {panelOpen&&<aside className="mobile-details">{panel}</aside>}
   </div>
   <footer className="controls"><button aria-pressed={motion} onClick={()=>setMotion(!motion)}>{motion?'✦ Animations actives':'✧ Animations réduites'}</button><span>Milaghaiba · {t.home}</span></footer>
   {notice&&<div className="notice" role="status">{notice}<button onClick={()=>setNotice('')} aria-label="Fermer">×</button></div>}
