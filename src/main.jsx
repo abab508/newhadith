@@ -40,7 +40,7 @@ function App(){
  </div>;
  return <main className={'site '+(motion?'motion':'still')} lang={lang.toLowerCase()}>
   <div className="desktop-art">
-   <img className="reference" src="/images/reference.webp" alt="Décor nocturne de la bibliothèque Milaghaiba"/>
+   <img className="reference" src="/images/backdrop-clean.webp" alt="Décor nocturne de la bibliothèque Milaghaiba"/>
    <div className="stars" aria-hidden="true"/>
    <nav className="nav-hotspots" aria-label="Navigation">
     <button style={pos([127,24,83,44])} onClick={()=>{setSelected(null);setHover(null);setPanelOpen(false);setNotice('')}} aria-label={t.home}/>
@@ -56,7 +56,7 @@ function App(){
    </form>
    <div className="hotspots-container" ref={cards}>{chapters.map((c,i)=>card(c,i))}</div>
    <div className="langs" style={pos([1167,25,128,34])}>{['FR','AR','EN'].map(l=><button key={l} aria-pressed={lang===l} onClick={()=>{setLang(l);setNotice('')}}>{l}</button>)}</div>
-   <aside className="details" style={pos([1017,394,380,540])} aria-live="polite">{(hover!==null||panelOpen)?panel:<div className="panel-empty" aria-label={t.choose}><span aria-hidden="true">✧</span><p>{t.choose}</p></div>}</aside>
+   <aside className="details" style={{...pos([1017,394,380,540]),'--chapter-image':`url(/images/chapitre-${selectedIndex===null?5:selectedIndex+1}.webp)`}} aria-live="polite">{(hover!==null||panelOpen)?panel:<div className="panel-empty" aria-label={t.choose}><span aria-hidden="true">✧</span><p>{t.choose}</p></div>}</aside>
   </div>
   <div className="mobile-art">
    <nav className="mobile-top"><button onClick={()=>{setSelected(null);setPanelOpen(false);setNotice('')}}>{t.home}</button><button onClick={()=>document.querySelector('#chapitres-mobile')?.scrollIntoView({behavior:'smooth'})}>{t.themes}</button><button onClick={()=>pending(t.sources)}>{t.sources}</button><div>{['FR','AR','EN'].map(l=><button key={l} onClick={()=>setLang(l)} aria-pressed={lang===l}>{l}</button>)}</div></nav>
