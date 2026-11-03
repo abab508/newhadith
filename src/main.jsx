@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import './style.css';
 
@@ -22,7 +22,28 @@ const placements=[
  [81,693,268,197],[364,693,257,197],[636,693,254,197],[902,693,256,197]
 ];
 const at=(x,y,w,h)=>({left:(100*x/1672)+'%',top:(100*y/941)+'%',width:(100*w/1672)+'%',height:(100*h/941)+'%'});
+// Ambient original discret : aucune lecture automatique ni fichier externe.
+function createWaterAmbience(){
+ const AudioCtor=window.AudioContext||window.webkitAudioContext;
+ if(!AudioCtor)return null;
+ const context=new AudioCtor();
+ const count=Math.floor(context.sampleRate*2);
+ const buffer=context.createBuffer(1,count,context.sampleRate);
+ const channel=buffer.getChannelData(0);
+ for(let i=0;i<count;i++)channel[i]=Math.random()*2-1;
+ const source=context.createBufferSource();
+ source.buffer=buffer;source.loop=true;
+ const lowpass=context.createBiquadFilter();lowpass.type='lowpass';lowpass.frequency.value=470;
+ const highpass=context.createBiquadFilter();highpass.type='highpass';highpass.frequency.value=130;
+ const volume=context.createGain();volume.gain.value=0.0001;
+ source.connect(lowpass).connect(highpass).connect(volume).connect(context.destination);
+ source.start();
+ volume.gain.setTargetAtTime(0.025,context.currentTime,0.5);
+ return {context,source,volume};
+}
 function App(){
+ const ambienceRef=useRef(null);
+ const [sound,setSound]=useState(false);
  const [lang,setLang]=useState('FR'),[hover,setHover]=useState(null),[chosen,setChosen]=useState(null),[query,setQuery]=useState(''),[notice,setNotice]=useState(''),[motion,setMotion]=useState(true),[navOpen,setNavOpen]=useState(false);
  const idx=lang==='AR'?1:lang==='EN'?2:0;
  const tr=translations[lang];
@@ -30,32 +51,47 @@ function App(){
  const chapter=active===null?null:C[active];
  useEffect(()=>{document.documentElement.lang=lang.toLowerCase();document.title='Milaghaiba — '+tr.chapter;},[lang,tr.chapter]);
  useEffect(()=>{const m=window.matchMedia('(prefers-reduced-motion: reduce)');setMotion(!m.matches);const fn=()=>setMotion(!m.matches);m.addEventListener('change',fn);return()=>m.removeEventListener('change',fn)},[]);
+ useEffect(()=>()=>{const audio=ambienceRef.current;if(audio){audio.source.stop();void audio.context.close();ambienceRef.current=null}},[]);
+ async function toggleSound(){
+  if(sound){
+   const audio=ambienceRef.current;ambienceRef.current=null;setSound(false);
+   if(audio){audio.volume.gain.setTargetAtTime(0.0001,audio.context.currentTime,0.09);audio.source.stop(audio.context.currentTime+0.4);await audio.context.close().catch(()=>{})}
+   return;
+  }
+  try{
+   const audio=createWaterAmbience();
+   if(!audio)return;
+   ambienceRef.current=audio;
+   await audio.context.resume();
+   setSound(true);
+  }catch{setNotice(lang==='AR'?'الصوت غير متاح':lang==='EN'?'Sound is unavailable':'Son indisponible')}
+ }
  function switchLang(next){setLang(next);setNotice('');setHover(null)}
  function select(i){setChosen(i);setNotice('')}
  function submit(e){e.preventDefault();const q=query.trim().toLocaleLowerCase();if(!q)return;const i=C.findIndex(c=>[...c.names,...c.topics.flat()].some(v=>v.toLocaleLowerCase().includes(q)));if(i===-1)setNotice(tr.notFound);else{select(i);setHover(null)}}
  function pending(label){setNotice(label+' — '+tr.unavailable)}
- const topicPanel=(visible)=> visible&&chapter ? <div className="panel-content" lang={lang.toLowerCase()} dir={lang==='AR'?'rtl':'ltr'}>
+ const topicPanel=(visible)=> visible&&chapter ? <div className="panel-content cinematic-panel-in" lang={lang.toLowerCase()} dir={lang==='AR'?'rtl':'ltr'}>
   <h3>{chapter.names[idx]}</h3><p className="panel-intro">{tr.intro} {chapter.names[idx].toLocaleLowerCase()}.</p><h4>✧ {tr.sub} ✧</h4>
   <div className="panel-topics">{chapter.topics.map((item,i)=><button key={i} onClick={()=>pending(item[idx])}><span>{item[idx]}</span><span aria-hidden="true">›</span></button>)}</div>
  </div>:null;
- return <main className={'page '+(motion?'with-motion':'without-motion')}>
-  <div className="scene" role="region" aria-label="Milaghaiba">
+ return <main key={lang} className={'page '+(motion?'with-motion':'without-motion')} lang={lang.toLowerCase()}>
+  <div className="scene" role="region" aria-label="Milaghaiba"><div className="cinema-particles" aria-hidden="true"/><div className="cinema-lantern-glow" aria-hidden="true"/>
    <img className="scene-art" src="/images/cinematic-textless.webp" alt="" aria-hidden="true" />
    <nav className="nav" style={at(143,28,505,48)} aria-label={tr.nav[0]}>{tr.nav.map((label,i)=><button key={i} onClick={()=>{if(i===0){setHover(null);setChosen(null);setNotice('')}else if(i===1)setNavOpen(v=>!v);else if(i===2)document.getElementById('search')?.focus();else pending(label)}}>{label}{i===1?' ⌄':''}</button>)}</nav>
    {navOpen&&<div className="nav-dropdown">{C.map((c,i)=><button key={c.id} onClick={()=>{select(i);setNavOpen(false)}}>{c.names[idx]}</button>)}</div>}
    <div className="langs" style={at(1353,24,202,47)} role="group" aria-label="Language">{['FR','AR','EN'].map((l,i)=><React.Fragment key={l}>{i>0&&<span className="sep" aria-hidden="true">|</span>}<button aria-pressed={lang===l} onClick={()=>switchLang(l)}>{l}</button></React.Fragment>)}</div>
-   <header className="hero" style={at(445,57,764,243)} dir={lang==='AR'?'rtl':'ltr'}>
+   <header className="hero cinematic-reveal" style={at(445,57,764,243)} dir={lang==='AR'?'rtl':'ltr'}>
     <h1 className={lang==='AR'?'brand-ar':'brand-latin'} lang={lang==='AR'?'ar':'fr'} dir={lang==='AR'?'rtl':'ltr'}>{lang==='AR'?'الملة الغائبة':'Milaghaiba'}</h1><p className="arabic-brand" lang="ar" dir="rtl" aria-hidden={lang==='AR'}>{lang==='AR'?'\u00a0':'الملة الغائبة'}</p>
     <p className="eyebrow">{tr.eyebrow}</p><h2>{tr.headline}</h2><p className="hero-description">{tr.description}</p>
    </header>
    <form className="search" style={at(425,315,798,66)} onSubmit={submit}><input id="search" value={query} onChange={e=>setQuery(e.target.value)} dir={lang==='AR'?'rtl':'ltr'} placeholder={tr.search} aria-label={tr.search}/><button>{tr.action}</button></form>
-   <h2 className="chapter-heading" style={at(490,438,530,41)}>{tr.chapter}</h2>
+   <h2 className="chapter-heading cinematic-reveal" style={at(490,438,530,41)}>{tr.chapter}</h2>
    <div className="card-grid">{C.map((c,i)=><button type="button" key={c.id} className={'card-hotspot '+(hover===i?'hovered':'')} style={at(...placements[i])} aria-label={c.names[idx]} aria-pressed={chosen===i} onMouseEnter={()=>setHover(i)} onMouseLeave={()=>setHover(null)} onFocus={()=>setHover(i)} onBlur={()=>setHover(null)} onClick={()=>select(i)}><span className="card-title" lang={lang.toLowerCase()} dir={lang==='AR'?'rtl':'ltr'}>{c.names[idx]}</span></button>)}</div>
    <aside className="panel" style={at(1172,405,457,497)} aria-live="polite">{topicPanel(active!==null)}</aside>
    {notice&&<div className="notice" role="status">{notice}<button onClick={()=>setNotice('')} aria-label="Fermer">×</button></div>}
   </div>
   <div className="mobile-controls"><div className="mobile-langs">{['FR','AR','EN'].map(l=><button key={l} aria-pressed={lang===l} onClick={()=>switchLang(l)}>{l}</button>)}</div><h2>{tr.chapter}</h2><form onSubmit={submit}><input value={query} onChange={e=>setQuery(e.target.value)} dir={lang==='AR'?'rtl':'ltr'} placeholder={tr.search}/><button>{tr.action}</button></form><div className="mobile-chapters">{C.map((c,i)=><button key={c.id} onClick={()=>select(i)}>{c.names[idx]}</button>)}</div>{topicPanel(chosen!==null)}</div>
-  <footer><button onClick={()=>setMotion(v=>!v)} aria-pressed={motion}>✦ {tr.motion}</button></footer>
+  <footer className="cinema-toolbar"><button type="button" onClick={()=>setMotion(v=>!v)} aria-pressed={motion}>✦ {tr.motion} {motion?'✓':'○'}</button><button type="button" onClick={()=>void toggleSound()} aria-pressed={sound}>{sound?'♫':'♪'} {lang==='AR'?(sound?'إيقاف الصوت':'صوت الماء'):lang==='EN'?(sound?'Mute ambience':'Water ambience'):(sound?'Couper l’ambiance':'Ambiance eau')}</button></footer>
  </main>
 }
 createRoot(document.getElementById('root')).render(<App/>);
