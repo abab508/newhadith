@@ -172,3 +172,24 @@
  .mobile-card .chapter-art{position:relative;display:block;width:100%;height:auto;aspect-ratio:1.11;object-fit:cover}
  .mobile-card.selected{border-color:#ffe4a2;box-shadow:0 0 18px #f5c06d9e}
 }
+
+/* État normal = l'image originale intégrale, sans duplicata de texte.
+   État interactif = le même visuel avec bordure et halo dorés temporaires. */
+@media(min-width:801px){
+ .desktop-art .hotspot .card-caption{display:none!important}
+ .desktop-art .hotspot .chapter-art{transform:none;filter:none}
+ .desktop-art .hotspot{border:1px solid #b38a4d;box-shadow:none;transform:none;transition:border-color .25s,box-shadow .25s}
+ .desktop-art .hotspot:hover,
+ .desktop-art .hotspot.hovered,
+ .desktop-art .hotspot:focus-visible{
+   border:2px solid #ffe1a0;
+   box-shadow:0 0 0 1px #ffe9bc,0 0 20px 4px #eabb6eab;
+   transform:none;
+ }
+ .desktop-art .hotspot:not(:hover):not(.hovered):not(:focus-visible){border-color:#b38a4d;box-shadow:none;transform:none}
+ .desktop-art .hotspot:hover .chapter-art,
+ .desktop-art .hotspot.hovered .chapter-art{filter:none;transform:none}
+ /* Dans l'image de référence, la carte Mariage était déjà sélectionnée.
+    Les découpes sont opaques, donc seule la carte dédiée est affichée. */
+ .desktop-art .hotspot:nth-of-type(5) .chapter-art{object-fit:cover}
+}
