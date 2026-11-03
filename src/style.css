@@ -714,3 +714,48 @@
 @media(prefers-reduced-motion:reduce){
  .theme-fx,.theme-fx i{display:none!important;animation:none!important;transition:none!important}
 }
+
+/* Precise transparent fountain overlay placed over the original photograph.
+   All text, borders and original medallions remain untouched. */
+@media (min-width:801px){
+ .scene .card-purity .theme-fx-purity i{display:none!important}
+ .scene .card-purity .theme-fx-purity .fountain-animation{
+   position:absolute;inset:0;width:100%;height:100%;
+   display:block;pointer-events:none;overflow:visible;
+ }
+ .fountain-water-path{
+   stroke-dasharray:8 7;
+   animation:fountain-stream 1.05s linear infinite;
+ }
+ .fountain-water-sheen{
+   stroke-dasharray:3 18;
+   animation:fountain-stream .85s linear infinite;
+   opacity:.65;
+ }
+ .fountain-wave{transform-box:fill-box;transform-origin:center;opacity:0}
+ .fountain-wave.wave-a{animation:fountain-ripple 1.8s ease-out infinite}
+ .fountain-wave.wave-b{animation:fountain-ripple 1.8s ease-out .9s infinite}
+ .fountain-drop{transform-box:fill-box;transform-origin:center;opacity:0}
+ .fountain-drop.drop-a{animation:fountain-splash 1.2s ease-out infinite}
+ .fountain-drop.drop-b{animation:fountain-splash 1.4s ease-out .4s infinite}
+ .fountain-drop.drop-c{animation:fountain-splash 1.1s ease-out .7s infinite}
+ .scene .card-purity .theme-fx-purity{opacity:0;transition:opacity .3s ease}
+ .with-motion .scene .card-purity:is(:hover,.hovered,:focus-visible) .theme-fx-purity{opacity:1}
+ .scene .card-purity .fountain-animation *{animation-play-state:paused}
+ .with-motion .scene .card-purity:is(:hover,.hovered,:focus-visible) .fountain-animation *{animation-play-state:running}
+}
+@keyframes fountain-stream{from{stroke-dashoffset:30}to{stroke-dashoffset:0}}
+@keyframes fountain-ripple{
+ 0%{opacity:0;transform:scale(.7)}
+ 25%{opacity:.65}
+ 100%{opacity:0;transform:scale(1.55)}
+}
+@keyframes fountain-splash{
+ 0%{opacity:0;transform:translateY(0) scale(.6)}
+ 32%{opacity:.9}
+ 100%{opacity:0;transform:translateY(-11px) scale(.4)}
+}
+.without-motion .fountain-animation{display:none!important}
+@media(prefers-reduced-motion:reduce){
+ .fountain-animation{display:none!important}
+}
