@@ -563,3 +563,62 @@
  .scene .search button::before{opacity:0!important;transition:none!important}
  .scene .search .search-action-text{transition:none!important}
 }
+
+/* FINAL single-layer card interaction.
+   The artwork already has its own gold frame; the only icon must be
+   icon-original-N.png, with no SVG duplicate or generated copy.
+   Remove all previous pseudo-element sweeps and second halos. */
+@media (min-width:801px){
+ .scene .card-hotspot::before,
+ .scene .card-hotspot::after,
+ .with-motion .scene .card-hotspot::before,
+ .with-motion .scene .card-hotspot::after{
+   content:none!important;
+   display:none!important;
+   animation:none!important;
+   box-shadow:none!important;
+ }
+ .scene .card-hotspot,
+ .with-motion .scene .card-hotspot{
+   border:0!important;
+   outline:0;
+   background:transparent!important;
+   transform:none!important;
+   filter:none!important;
+   box-shadow:none!important;
+   transition:box-shadow .3s ease;
+ }
+ .with-motion .scene .card-hotspot:is(:hover,.hovered,:focus-visible){
+   border:0!important;
+   outline:0;
+   transform:none!important;
+   filter:none!important;
+   box-shadow:0 0 13px 2px rgba(245,198,102,.48)!important;
+ }
+ .scene .card-hotspot:focus-visible{
+   outline:2px solid #f8d68e!important;
+   outline-offset:1px;
+ }
+ .scene .card-hotspot .card-icon{
+   width:clamp(28px,3.1vw,52px)!important;
+   height:clamp(28px,3.1vw,52px)!important;
+   border:0!important;
+   background:transparent!important;
+   box-shadow:none!important;
+   overflow:visible;
+ }
+ .scene .card-hotspot .card-icon .original-medallion{
+   display:block!important;
+   width:100%!important;height:100%!important;
+   object-fit:contain;mix-blend-mode:normal;
+   filter:none;opacity:1;
+ }
+ .with-motion .scene .card-hotspot:is(:hover,.hovered,:focus-visible) .card-icon{
+   transform:scale(1.035);
+   filter:drop-shadow(0 0 5px rgba(247,209,129,.47));
+ }
+}
+@media(prefers-reduced-motion:reduce){
+ .scene .card-hotspot,.scene .card-icon{transition:none!important;animation:none!important}
+ .scene .card-hotspot::before,.scene .card-hotspot::after{display:none!important}
+}
