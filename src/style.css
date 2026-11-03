@@ -297,3 +297,47 @@
  }
  .desktop-art .langs button:focus-visible{outline:2px solid #f9d28a;outline-offset:-2px}
 }
+
+/* Multilingual render: keep the original French image untouched. Only the
+   Arabic/English views replace baked-in French captions on actual cards. */
+@media (min-width:801px) {
+ .site[lang="ar"] .desktop-art .hotspot .card-caption,
+ .site[lang="en"] .desktop-art .hotspot .card-caption {
+   display:flex!important;
+   position:absolute;
+   inset-inline:0;
+   bottom:0;
+   z-index:2;
+   min-height:37%;
+   padding:6px 5px 9px;
+   flex-direction:column;
+   align-items:center;
+   justify-content:center;
+   gap:2px;
+   border-radius:0 0 12px 12px;
+   background:linear-gradient(180deg,#00180efb,#00180fff 65%);
+ }
+ .site[lang="ar"] .desktop-art .hotspot .card-caption strong {
+   font-family:"Noto Naskh Arabic","Traditional Arabic","Segoe UI",serif;
+   font-size:clamp(14px,1.65vw,24px);
+   line-height:1.5;
+ }
+ .site[lang="en"] .desktop-art .hotspot .card-caption strong {
+   font-family:Georgia,"Times New Roman",serif;
+   font-size:clamp(10px,1.28vw,19px);
+   line-height:1.15;
+ }
+ .site[lang="ar"] .panel-copy,
+ .site[lang="ar"] .panel-empty {
+   direction:rtl;
+   font-family:"Noto Naskh Arabic","Traditional Arabic",serif;
+ }
+ .site[lang="ar"] .panel-copy h2 {font-size:clamp(17px,1.7vw,25px)}
+ .site[lang="ar"] .panel-copy .topics button {direction:rtl}
+ .site[lang="ar"] .desk-search input {text-align:right}
+}
+.site[lang="ar"] .mobile-card .card-caption strong,
+.site[lang="ar"] .mobile-details {
+ font-family:"Noto Naskh Arabic","Traditional Arabic","Segoe UI",serif;
+}
+.site[lang="ar"] .mobile-search input {text-align:right}
