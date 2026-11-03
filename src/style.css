@@ -275,3 +275,39 @@
 @media(prefers-reduced-motion:reduce){
  .cinema-cloud-haze,.cinema-book-light{display:none!important;animation:none!important}
 }
+
+/* Chapter cards: original gold border belongs to the artwork.
+   Never render a second border, shifted duplicate or enlarged frame above it. */
+@media(min-width:801px){
+ .scene .card-hotspot,
+ .with-motion .scene .card-hotspot{
+  border:0!important;
+  box-shadow:none;
+  transform:none;
+  border-radius:14px;
+  background:transparent;
+  transition:filter .3s ease,box-shadow .3s ease;
+ }
+ .scene .card-hotspot:is(:hover,.hovered,:focus-visible),
+ .with-motion .scene .card-hotspot:is(:hover,.hovered,:focus-visible){
+  border:0!important;
+  transform:none!important;
+  box-shadow:0 0 15px 3px rgba(244,200,113,.68);
+  filter:brightness(1.04);
+ }
+ .scene .card-hotspot:focus-visible{outline:2px solid #ffdf9e;outline-offset:2px}
+ .scene .card-hotspot .card-icon{
+  width:clamp(17px,2.55vw,42px);
+  height:clamp(17px,2.55vw,42px);
+ }
+ .scene .card-hotspot .card-icon svg{display:block;width:58%;height:58%}
+ .scene .card-hotspot .card-icon>span{display:none}
+ .with-motion .scene .card-hotspot::before{
+  /* No moving second border on top of the border baked into the card */
+  inset:3px;border-radius:10px;
+ }
+ .with-motion .scene .card-hotspot:hover .card-icon,
+ .with-motion .scene .card-hotspot:focus-visible .card-icon{
+  transform:scale(1.035);
+ }
+}
