@@ -49,7 +49,7 @@ function App(){
     <button style={pos([459,24,99,44])} onClick={()=>pending(t.sources)} aria-label={t.sources}/>
    </nav>
    {menu&&<div className="drop">{chapters.map((c,i)=><button key={i} onClick={()=>{choose(i);setMenu(false)}}>{c.title[iLang]}</button>)}</div>}
-   <form className="desk-search" style={pos([355,311,706,65])} onSubmit={lookup}>
+   <form className="desk-search" style={pos([354,313,750,58])} onSubmit={lookup}>
     <label className="sr-only" htmlFor="main-query">{t.search}</label>
     <input ref={input} id="main-query" value={query} onChange={e=>setQuery(e.target.value)} placeholder={t.search}/>
     <button type="submit">{t.go}</button>
